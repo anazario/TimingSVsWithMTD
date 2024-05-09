@@ -2,16 +2,18 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 from PhysicsTools.NanoAOD.common_cff import *
 from FWCore.ParameterSet.VarParsing import VarParsing
+from RecoTracker.TransientTrackingRecHit.TransientTrackingRecHitBuilder_cfi import *
+
 options = VarParsing('python')
 
 options.register('processName','Tree',VarParsing.multiplicity.singleton,VarParsing.varType.string,'process name to be considered');
 options.parseArguments()
 
-process = cms.Process(options.processName,eras.Run2_2018)
+process = cms.Process(options.processName,eras.Phase2C17I13M9)
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load("Configuration.Geometry.GeometryIdeal_cff")
-process.load("Configuration.Geometry.GeometryExtended2026D98_cff")
+#process.load("Configuration.Geometry.GeometryExtended2026D98_cff")
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load("TrackingTools.TransientTrack.TransientTrackBuilder_cfi")
@@ -19,9 +21,12 @@ process.load("Geometry.CommonTopologies.globalTrackingGeometry_cfi")
 process.load("RecoTracker.Configuration.RecoTracker_cff")
 process.load("RecoTracker.TrackProducer.TrackRefitters_cff")
 process.load("RecoMTD.TransientTrackingRecHit.MTDTransientTrackingRecHitBuilder_cfi")
+process.load('Configuration.Geometry.GeometryExtended2026D98Reco_cff')
 
 #verify which one to use
-process.GlobalTag.globaltag = '133X_mcRun4_realistic_v1'
+#process.GlobalTag.globaltag = 'auto:phase2_realistic_T25'
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic_T25', '')
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
@@ -39,7 +44,7 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string(options
 
 process.timedVertices = cms.EDProducer("TimedSVsProducer",
                                        vertexLabel = cms.string("timedVertices"),
-                                       electronSrc = cms.InputTag("gedGsfElectrons"),#"lowPtGsfElectrons"),
+                                       electronSrc = cms.InputTag("gedGsfElectrons"),
                                        tracksSrc = cms.InputTag("generalTracks"),
                                        svSrc =  cms.InputTag("inclusiveSecondaryVertices"),
                                        TrackTransformer = cms.PSet(
