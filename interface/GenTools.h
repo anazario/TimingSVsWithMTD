@@ -1,5 +1,5 @@
-#ifndef KUCMSNtupleizer_KUCMSNtupleizer_GenTools_h
-#define KUCMSNtupleizer_KUCMSNtupleizer_GenTools_h
+#ifndef TimingWithSVs_TimingSVsWithMTD_GenTools_h
+#define TimingWithSVs_TimingSVsWithMTD_GenTools_h
 
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
@@ -53,22 +53,43 @@ inline LepMomType AssignGenLeptonMomType(const int motherID) {
   return type;
 }
 
-inline LepMomType ClassifyGenLeptonMomType(const reco::GenParticle &genLepton) {
+inline int GenParticleMomPdgID(const reco::GenParticle &genLepton) {
 
+  int pdgID = -1;
   std::vector<int> motherIDs(MomIDs(genLepton));
 
   LepMomType momType = kUnmatched;
   for(auto const& id : motherIDs) {
     momType = AssignGenLeptonMomType(id);
 
-    if(momType != kUnmatched)
+    if(momType != kUnmatched) {
+      pdgID = id;
       break;
+    }
   }
-  return momType;
+  return pdgID;
 }
 
-inline bool isSignalGenElectron(const reco::GenParticle &genLepton) {
-  LepMomType momType = ClassifyGenLeptonMomType(genLepton);
+inline LepMomType ClassifyGenLeptonMomType(const reco::GenParticle &genLepton) {
+  int momID(GenParticleMomPdgID(genLepton));
+  return AssignGenLeptonMomType(momID);
+}
+
+inline bool isSignalGenElectron(const reco::GenParticle &gen) {
+  if(abs(gen.pdgId()) != 11) return false;
+  LepMomType momType = ClassifyGenLeptonMomType(gen);
+  return (momType == kZ || momType == kSusy);
+}
+
+inline bool isSignalGenMuon(const reco::GenParticle &gen) {
+  if(abs(gen.pdgId()) != 13) return false;
+  LepMomType momType = ClassifyGenLeptonMomType(gen);
+  return (momType == kZ || momType == kSusy);
+}
+
+inline bool isSignalGenJet(const reco::GenParticle &gen) {
+  if(abs(gen.pdgId()) > 6) return false;
+  LepMomType momType = ClassifyGenLeptonMomType(gen);
   return (momType == kZ || momType == kSusy);
 }
 

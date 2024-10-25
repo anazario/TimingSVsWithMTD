@@ -1,23 +1,36 @@
-#ifndef VertexHelper_h
-#define VertexHelper_h
+#ifndef TimingWithSVs_TimingSVsWithMTD_VertexHelper_h
+#define TimingWithSVs_TimingSVsWithMTD_VertexHelper_h
 
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+
+#include <Math/Vector4D.h>
+
+typedef ROOT::Math::PtEtaPhiMVector LorentzVec;
 
 class VertexHelper {
 
  public:
-  
+
   static int CountInstances(const reco::Vertex &vertex, const reco::TrackCollection &tracks);
   static double CalculateTotalPt(const reco::Vertex &vertex);
   static double CalculateTotalPt(const reco::TrackCollection &tracks);
-  static double CalculateWeightedPt(const reco::Vertex &vertex);
+  static double CalculateTotalWeightedPt(const reco::Vertex &vertex);
+  static double CalculateTotalTrackWeight(const reco::Vertex &vertex);
   static double CalculateEcalness(const reco::Vertex &vertex, const reco::TrackCollection &ecalTracks);
   static double CalculateTrackOverlap(const reco::Vertex &vertex1, const reco::Vertex &vertex2);
-  static reco::TrackCollection GetTracks(const reco::Vertex &vertex);
-
+  static double GetDxyDiff(const reco::Vertex &vertex, const reco::GenParticle &genParticle);
+  static double Get3Ddiff(const reco::Vertex &vertex, const reco::GenParticle &genParticle);
+  static double GetTrackWeight(const reco::Vertex &vertex, const reco::Track &track);
+  static LorentzVec GetVertex4Vector(const reco::Vertex &vertex);
+  static LorentzVec GetSV4Vector(const reco::Vertex &vertex);
+  static reco::TrackCollection GetTracks(const reco::Vertex &vertex, const bool aboveThreshold = false);
+  static reco::Vertex TimeStampVertex(const reco::Vertex &vertex, const double tof); 
+  
   static void SortByPt(reco::VertexCollection &vertices);
 
   template <typename T>

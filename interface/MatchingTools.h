@@ -1,5 +1,5 @@
-#ifndef KUCMSNtupleizer_KUCMSNtupleizer_MatchingTools_h
-#define KUCMSNtupleizer_KUCMSNtupleizer_MatchingTools_h
+#ifndef TimingWithSVs_TimingSVsWithMTD_MatchingTools_h
+#define TimingWithSVs_TimingSVsWithMTD_MatchingTools_h
 
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
